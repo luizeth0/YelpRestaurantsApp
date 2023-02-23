@@ -2,8 +2,8 @@ package com.restaurant.yelprestaurantsapp.model.domain
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.restaurantsapp.model.Business
-import com.example.restaurantsapp.model.Location
+import com.restaurant.yelprestaurantsapp.model.Business
+import com.restaurant.yelprestaurantsapp.model.Location
 
 @Entity(tableName = "restaurants")
 data class RestaurantDomain(

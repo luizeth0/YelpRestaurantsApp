@@ -1,4 +1,4 @@
-package com.example.restaurantsapp.model
+package com.restaurant.yelprestaurantsapp.model
 
 
 import com.google.gson.annotations.SerializedName

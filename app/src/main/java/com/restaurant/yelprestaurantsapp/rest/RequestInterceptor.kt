@@ -1,4 +1,4 @@
-package com.example.restaurantsapp.rest
+package com.restaurant.yelprestaurantsapp.rest
 
 import okhttp3.Interceptor
 import okhttp3.Response

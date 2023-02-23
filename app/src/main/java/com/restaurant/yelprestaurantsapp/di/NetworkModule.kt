@@ -1,7 +1,7 @@
 package com.restaurant.yelprestaurantsapp.di
 
-import com.example.restaurantsapp.rest.RequestInterceptor
-import com.example.restaurantsapp.rest.ServiceApi
+import com.restaurant.yelprestaurantsapp.rest.RequestInterceptor
+import com.restaurant.yelprestaurantsapp.rest.ServiceApi
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides

@@ -1,6 +1,6 @@
-package com.example.restaurantsapp.rest
+package com.restaurant.yelprestaurantsapp.rest
 
-import com.example.restaurantsapp.model.YelpResponse
+import com.restaurant.yelprestaurantsapp.model.YelpResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
