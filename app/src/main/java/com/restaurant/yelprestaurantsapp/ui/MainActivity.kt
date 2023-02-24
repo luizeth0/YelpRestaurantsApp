@@ -1,9 +1,12 @@
-package com.restaurant.yelprestaurantsapp
+package com.restaurant.yelprestaurantsapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.restaurant.yelprestaurantsapp.R
 import com.restaurant.yelprestaurantsapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,14 +21,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        setSupportActionBar(binding.toolbar)
-        binding.toolbar.title = title
-
-
         val navHost =
             supportFragmentManager.findFragmentById(R.id.frag_container) as NavHostFragment
         setupActionBarWithNavController(navHost.navController)
+    }
 
-
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.frag_container)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }
