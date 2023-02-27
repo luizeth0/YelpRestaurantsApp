@@ -32,11 +32,9 @@ private const val TAG = "Home"
 
 class Home : Fragment(), OnMapReadyCallback {
 
+    lateinit var maps: GoogleMap
     private lateinit var mapView: MapView
-    private lateinit var maps: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var latitude = 0.0
-    private var longitude = 0.0
 
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 1
@@ -88,7 +86,7 @@ class Home : Fragment(), OnMapReadyCallback {
         //yelpViewModel.getBusinessByLocation(33.90907588253681, -84.47932439447749)
 
         getBusiness()
-        Log.d(TAG, "Location2: $latitude + $longitude")
+        //Log.d(TAG, "Location2: $latitude + $longitude")
 
         mapView = binding.maps
         mapView.onCreate(savedInstanceState)
@@ -105,15 +103,22 @@ class Home : Fragment(), OnMapReadyCallback {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener {
                     it?.let {
-                        latitude = it.latitude
-                        longitude = it.longitude
+                        val latitude = it.latitude
+                        val longitude = it.longitude
                         Log.d(TAG, "Location is: $latitude + $longitude")
+                        yelpViewModel.getBusinessByLocation(latitude, longitude)
+
+                        maps.mapType = GoogleMap.MAP_TYPE_NORMAL
+                        maps.uiSettings.isZoomControlsEnabled = true
+                        val loc = LatLng(latitude,longitude)
+                        maps.addMarker(MarkerOptions().position(loc).title("You're here!"))
+                        maps.moveCamera(CameraUpdateFactory.newLatLng(loc))
                     }
                 }
         } else {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
         }
-        yelpViewModel.getBusinessByLocation(latitude, longitude)
+
     }
 
 
@@ -136,14 +141,8 @@ class Home : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-        googleMap.uiSettings.isZoomControlsEnabled = true
-        //val loc = LatLng(33.90907588253681, -84.47932439447749)
-        yelpViewModel.getBusinessByLocation(latitude, longitude)
-        val loc = LatLng(latitude,longitude)
-        googleMap.addMarker(MarkerOptions().position(loc).title("You're here!"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc))
-        googleMap.clear()
+        maps = googleMap
+        getLocation()
     }
 
     override fun onResume() {
