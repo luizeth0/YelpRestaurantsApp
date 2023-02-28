@@ -2,6 +2,7 @@ package com.restaurant.yelprestaurantsapp.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -37,7 +38,7 @@ class Home : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     companion object {
-        private const val REQUEST_LOCATION_PERMISSION = 1
+        private const val REQUEST_LOCATION_PERMISSION = 0
     }
 
     private val binding by lazy {
@@ -92,33 +93,45 @@ class Home : Fragment(), OnMapReadyCallback {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
+
+
         return binding.root
     }
 
-
-
-    private fun getLocation() {
-        if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) &&
-            (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED))  {
+    private fun getPermission(){
+        if ((ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) )  {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
+            return getPermission()
+        } else {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener {
                     it?.let {
-                        val latitude = it.latitude
-                        val longitude = it.longitude
-                        Log.d(TAG, "Location is: $latitude + $longitude")
-                        yelpViewModel.getBusinessByLocation(latitude, longitude)
-
-                        maps.mapType = GoogleMap.MAP_TYPE_NORMAL
-                        maps.uiSettings.isZoomControlsEnabled = true
-                        val loc = LatLng(latitude,longitude)
-                        maps.addMarker(MarkerOptions().position(loc).title("You're here!"))
-                        maps.moveCamera(CameraUpdateFactory.newLatLng(loc))
+                        maps.isMyLocationEnabled = true
+                        getLocation(it)
                     }
                 }
-        } else {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
-        }
 
+        }
+    }
+
+    fun getLocation(loc: Location) {
+        val latitude = loc.latitude
+        val longitude = loc.longitude
+        Log.d(TAG, "Location is: $latitude + $longitude")
+        yelpViewModel.getBusinessByLocation(latitude, longitude)
+        maps.clear()
+        maps.mapType = GoogleMap.MAP_TYPE_NORMAL
+        maps.uiSettings.isZoomControlsEnabled = true
+        maps.isMyLocationEnabled = true
+        maps.addMarker(MarkerOptions().position(LatLng(latitude,longitude)).title("You're here!🙋🏻‍♂️"))
+        maps.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    latitude,
+                    longitude
+                ), 12.0f
+            )
+        )
     }
 
 
@@ -142,7 +155,7 @@ class Home : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         maps = googleMap
-        getLocation()
+        getPermission()
     }
 
     override fun onResume() {
