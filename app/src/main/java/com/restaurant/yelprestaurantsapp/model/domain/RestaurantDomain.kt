@@ -3,6 +3,7 @@ package com.restaurant.yelprestaurantsapp.model.domain
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.restaurant.yelprestaurantsapp.model.Business
+import com.restaurant.yelprestaurantsapp.model.Coordinates
 import com.restaurant.yelprestaurantsapp.model.Location
 
 @Entity(tableName = "restaurants")
@@ -15,7 +16,8 @@ data class RestaurantDomain(
     val price: String,
     val rating: Double,
     val location: Location,
-    val distance: Double
+    val distance: Double,
+    val coordinates: Coordinates
 )
 
 fun List<Business>?.mapToDomainRestaurants(): List<RestaurantDomain> =
@@ -28,6 +30,7 @@ fun List<Business>?.mapToDomainRestaurants(): List<RestaurantDomain> =
             price = it.price ?: "not available",
             rating = it.rating ?: 0.0,
             location = it.location ?: Location(address1 = "not available"),
-            distance = it.distance ?: 0.0
+            distance = it.distance ?: 0.0,
+            coordinates = it.coordinates ?: Coordinates(latitude = 0.0,longitude = 0.0)
         )
     } ?: emptyList()

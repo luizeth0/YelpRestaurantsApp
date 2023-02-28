@@ -32,6 +32,7 @@ class YelpViewModel @Inject constructor(
     var price = ""
     var distance = 0.0
     var rating = 0.0
+    var coordinates = ""
 
     private val _business: MutableLiveData<UIState<List<RestaurantDomain>>> = MutableLiveData(UIState.LOADING)
     val business: LiveData<UIState<List<RestaurantDomain>>> get() = _business

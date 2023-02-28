@@ -58,6 +58,7 @@ class Home : Fragment(), OnMapReadyCallback {
             yelpViewModel.rating = it.rating
             yelpViewModel.distance = it.distance
             yelpViewModel.phone = it.phone
+            yelpViewModel.coordinates = it.coordinates.toString()
             findNavController().navigate(R.id.action_navigation_home_to_navigation_details)
         }
     }
@@ -84,16 +85,11 @@ class Home : Fragment(), OnMapReadyCallback {
             adapter = yelpAdapter
         }
 
-        //yelpViewModel.getBusinessByLocation(33.90907588253681, -84.47932439447749)
-
         getBusiness()
-        //Log.d(TAG, "Location2: $latitude + $longitude")
 
         mapView = binding.maps
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-
-
 
         return binding.root
     }
