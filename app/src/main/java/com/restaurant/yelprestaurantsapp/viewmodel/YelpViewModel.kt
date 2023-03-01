@@ -8,13 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.restaurant.yelprestaurantsapp.model.domain.RestaurantDomain
+import com.restaurant.yelprestaurantsapp.model.domain.ReviewDomain
 import com.restaurant.yelprestaurantsapp.rest.RestaurantRepository
-import com.restaurant.yelprestaurantsapp.rest.RestaurantRepositoryImpl
 import com.restaurant.yelprestaurantsapp.utils.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +24,7 @@ class YelpViewModel @Inject constructor(
 
 ): ViewModel() {
 
+    var id = ""
     var name = ""
     var img = ""
     var loc = ""
@@ -36,6 +36,9 @@ class YelpViewModel @Inject constructor(
 
     private val _business: MutableLiveData<UIState<List<RestaurantDomain>>> = MutableLiveData(UIState.LOADING)
     val business: LiveData<UIState<List<RestaurantDomain>>> get() = _business
+
+    private val _reviews: MutableLiveData<UIState<List<ReviewDomain>>> = MutableLiveData(UIState.LOADING)
+    val reviews: LiveData<UIState<List<ReviewDomain>>> get() = _reviews
 
     init {
         getBusinessByLocation()
@@ -53,9 +56,17 @@ class YelpViewModel @Inject constructor(
                 }
 
             }
+    }
 
-
-
+    fun getReviews(id: String? = null) {
+        id?.let {
+            viewModelScope.launch(ioDispatcher) {
+                restaurantRepository.getReviews(id).collect {
+                    _reviews.postValue(it)
+                    Log.d(ContentValues.TAG, "getReviews: $_reviews")
+                }
+            }
+        }
     }
 
 

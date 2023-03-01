@@ -26,6 +26,7 @@ import com.restaurant.yelprestaurantsapp.databinding.FragmentHomeBinding
 import com.restaurant.yelprestaurantsapp.model.domain.RestaurantDomain
 import com.restaurant.yelprestaurantsapp.ui.adapter.YelpAdapter
 import com.restaurant.yelprestaurantsapp.utils.UIState
+import com.restaurant.yelprestaurantsapp.utils.ViewType
 import com.restaurant.yelprestaurantsapp.viewmodel.YelpViewModel
 
 
@@ -51,6 +52,7 @@ class Home : Fragment(), OnMapReadyCallback {
 
     private val yelpAdapter by lazy {
         YelpAdapter {
+            yelpViewModel.id = it.id
             yelpViewModel.name = it.name
             yelpViewModel.img = it.image
             yelpViewModel.loc = it.location.displayAddress.toString().replace("[","").replace("]","")
@@ -132,13 +134,17 @@ class Home : Fragment(), OnMapReadyCallback {
 
 
     private fun getBusiness() {
-        yelpViewModel.business.observe(viewLifecycleOwner) {
+        yelpViewModel.business.observe(viewLifecycleOwner) { it ->
+            val viewTypeList: MutableList<ViewType> = mutableListOf()
             when (it) {
                 is UIState.LOADING -> {
                 }
                 is UIState.SUCCESS<List<RestaurantDomain>> -> {
                     Log.d(TAG, "TEST: $it")
-                    yelpAdapter.updateItems(it.response ?: emptyList())
+                    it.response.forEach {
+                        viewTypeList.add(ViewType.RESTAURANT(it))
+                    }
+                    yelpAdapter.updateItems(viewTypeList)
                 }
                 is UIState.ERROR -> {
                     it.error.localizedMessage?.let {
