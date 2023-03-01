@@ -112,9 +112,9 @@ class ReviewViewHolder(private val binding: ReviewViewItemBinding) :
         Glide
             .with(binding.root)
             .load(item.user.imageUrl)
-            .transform(CenterCrop(), RoundedCorners(10))
-            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.ic_launcher_foreground)
+            .transform(CenterCrop(), RoundedCorners(60))
+            .placeholder(R.drawable.icon_person)
+            .error(R.drawable.icon_person)
             .into(binding.imgUserReview)
         itemView.setOnClickListener {
         }
